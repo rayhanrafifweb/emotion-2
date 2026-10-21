@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kelompok 3</title> <!-- ganti dengan nama kelompok kalian --> 
+<style>
+:root{--navy:#17234a;--blue:#2e63d5;--yellow:#ffd34e;--cream:#fff9e9;--ink:#202744;--green:#16845b;--red:#c84646}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:var(--ink);background:linear-gradient(135deg,#fff9e9,#eef3ff);min-height:100vh}
+header{background:var(--navy);color:white;padding:18px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 5px 18px #17234a25}
+.brand{font-weight:900;font-size:1.3rem;letter-spacing:.3px}.brand span{color:var(--yellow)}.tag{font-size:.8rem;color:#dce5ff}
+main{max-width:1100px;margin:24px auto;padding:0 16px}.intro{text-align:center;margin-bottom:20px}.intro h1{font-size:clamp(1.7rem,4vw,2.5rem);margin:0 0 6px;color:var(--navy)}.intro p{margin:0;color:#58617c}
+.game{display:grid;grid-template-columns:1fr 1.15fr;gap:18px}.panel{background:#fff;border:2px solid #e3e9fa;border-radius:22px;padding:20px;box-shadow:0 12px 30px #17234a0d}
+.panel h2{font-size:1.1rem;margin:0 0 14px;color:var(--navy)}.target{text-align:center;background:var(--cream);border-radius:18px;padding:18px;margin-bottom:16px}
+.target img{width:130px;height:130px;object-fit:contain;display:block;margin:0 auto 8px}.target .label{font-size:1.6rem;font-weight:900;color:var(--navy)}.target .hint{font-size:.9rem;color:#626b82}
+.stats{display:flex;gap:10px}.stat{flex:1;background:#f3f6ff;border-radius:14px;padding:12px;text-align:center}.stat small{display:block;color:#626b82}.stat strong{font-size:1.5rem;color:var(--blue)}
+button{border:0;border-radius:12px;padding:12px 16px;font-weight:800;cursor:pointer;font-size:.95rem;transition:.15s}button:hover{transform:translateY(-1px)}button:disabled{opacity:.55;cursor:not-allowed;transform:none}.primary{background:var(--blue);color:white}.secondary{background:#e9eefc;color:var(--navy)}.btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.btnrow button{flex:1}
+.camera-wrap{position:relative;background:#10172c;border-radius:16px;overflow:hidden;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center}
+video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1);display:block}canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;transform:scaleX(-1)}.camera-placeholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#dce5ff;text-align:center;padding:24px}.camera-placeholder span{font-size:2.5rem;display:block;margin-bottom:8px}
+.result{margin-top:14px;border-radius:14px;padding:14px;background:#f2f5fc;display:flex;align-items:center;justify-content:space-between;gap:10px}.result strong{display:block}.pill{font-size:.8rem;font-weight:800;border-radius:999px;padding:6px 10px;background:#e2e7f4;color:#48516a;white-space:nowrap}.pill.good{background:#d9f6e9;color:#126c4a}.pill.bad{background:#ffe2e2;color:#a32b2b}
+.progress{height:8px;background:#e7ebf5;border-radius:99px;overflow:hidden;margin-top:10px}.progress div{height:100%;width:0;background:var(--blue);transition:width .2s}
+.notice{font-size:.84rem;color:#626b82;line-height:1.5;margin:12px 0 0}.emotions{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}.emotion{background:#f5f7fc;border:2px solid transparent;border-radius:12px;padding:8px 4px;text-align:center;font-size:.75rem}.emotion img{width:48px;height:48px;object-fit:contain;display:block;margin:0 auto 5px}.emotion.active{border-color:var(--yellow);background:#fff8d9}
+footer{text-align:center;font-size:.78rem;color:#737b91;padding:22px}
+@media(max-width:760px){.game{grid-template-columns:1fr}.panel{padding:16px}.emotions{grid-template-columns:repeat(4,1fr)}header{padding:14px 16px}}
+[hidden]{display:none !important}
+</style>
+</head>
+<body>
+<header><div class="brand">Kelompok <span>3</span></div></header>
+<main>
+  <section class="intro"><h1>Match the Emotion!</h1><p>Tirukan ekspresi yang muncul, lalu lihat apakah AI mengenalinya.</p></section>
+  <section class="game">
+    <div class="panel">
+      <h2>Ekspresi target</h2>
+      <div class="target">
+        <img id="targetImg" src="assets/happy.svg" alt="Ekspresi target">
+        <div class="label" id="targetLabel">HAPPY</div>
+        <div class="hint">Coba tunjukkan ekspresi ini ke kamera!</div> <!-- ganti keterangan ini --> 
+      </div>
+      <div class="stats">
+        <div class="stat"><small>Skor</small><strong id="score">0</strong></div>
+        <div class="stat"><small>Ronde</small><strong id="round">1</strong></div>
+        <div class="stat"><small>Benar</small><strong id="correct">0</strong></div>
+      </div>
+      <div class="btnrow"><button id="newTarget" class="primary">Acak Ekspresi</button><button id="reset" class="secondary">Ulangi Skor</button></div>
+      <div class="emotions" id="emotionCards">
+        <div class="emotion" data-emotion="happy"><img src="assets/happy.svg" alt=""><b>Happy</b></div>
+        <div class="emotion" data-emotion="sad"><img src="assets/sad.svg" alt=""><b>Sad</b></div>
+        <div class="emotion" data-emotion="surprised"><img src="assets/suprised.svg" alt=""><b>Surprised</b></div>
+        <div class="emotion" data-emotion="angry"><img src="assets/angry.svg" alt=""><b>Angry</b></div>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>Kamera & deteksi AI</h2>
+      <div class="camera-wrap">
+        <video id="video" autoplay muted playsinline hidden></video>
+        <canvas id="overlay"></canvas>
+        <div class="camera-placeholder" id="placeholder"><span>📷</span><b>Kamera belum aktif</b><br><small>Tekan tombol “Mulai Kamera”</small></div>
+      </div>
+      <div class="btnrow"><button id="start" class="primary">Mulai Kamera</button><button id="stop" class="secondary" disabled>Matikan Kamera</button></div>
+      <div class="result"><div><strong id="resultTitle">Siap bermain?</strong><span id="resultText">Aktifkan kamera untuk memulai deteksi ekspresi.</span></div><span id="confidence" class="pill">AI belum aktif</span></div>
+      <div class="progress"><div id="confidenceBar"></div></div>
+      <p class="notice" id="status">Model AI akan dimuat saat kamera dimulai. Koneksi internet diperlukan untuk memuat library dan model.</p>
+      <p class="notice">AI memperkirakan ekspresi wajah dari gambar, bukan memastikan perasaan seseorang. Hasil bisa keliru tergantung pencahayaan, posisi wajah, dan kondisi kamera.</p>
+    </div>
+  </section>
+</main>
+<footer>Emotion Match • HTML + CSS + JavaScript • Deteksi ekspresi berjalan di browser</footer> 
+<audio id="soundCorrect" src="assets/poin.wav" preload="auto"></audio>
+<audio id="soundPop" src="assets/pop.wav" preload="auto"></audio>
+<script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+<script>
+const MODEL_URL='https://justadudewhohacks.github.io/face-api.js/models';
+const EMOTIONS={
+ happy:{label:'HAPPY',file:'assets/happy.svg'},
+ sad:{label:'SAD',file:'assets/sad.svg'},
+ surprised:{label:'SURPRISED',file:'assets/suprised.svg'},
+ angry:{label:'ANGRY',file:'assets/angry.svg'}
+};
+const video=document.getElementById('video'), canvas=document.getElementById('overlay');
+const ctx=canvas.getContext('2d');
+let stream=null, running=false, modelReady=false, target='happy', score=0, round=1, correct=0, lastJudged='', lastJudgeAt=0;
+const $=id=>document.getElementById(id);
+function play(id){const a=$(id); if(a){a.currentTime=0;a.play().catch(()=>{});}}
+function setStatus(s){$('status').textContent=s;}
+function chooseTarget(){
+ const keys=Object.keys(EMOTIONS).filter(k=>k!==target);
+ target=keys[Math.floor(Math.random()*keys.length)] || 'happy';
+ $('targetImg').src=EMOTIONS[target].file; $('targetLabel').textContent=EMOTIONS[target].label;
+ document.querySelectorAll('.emotion').forEach(el=>el.classList.toggle('active',el.dataset.emotion===target));
+ $('round').textContent=round; lastJudged='';
+}
+function updateResult(title,text,pill,kind=''){
+ $('resultTitle').textContent=title;$('resultText').textContent=text;
+ $('confidence').textContent=pill;$('confidence').className='pill '+kind;
+}
+async function startCamera(){
+ if(running)return;
+ $('start').disabled=true;setStatus('Memuat model AI pengenalan ekspresi…');
+ try{
+   if(!window.faceapi) throw new Error('Library AI tidak berhasil dimuat. Periksa koneksi internet.');
+   if(!modelReady){
+     await Promise.all([
+       faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
+       faceapi.nets.faceExpressionNet.loadFromUri(MODEL_URL)
+     ]);
+     modelReady=true;
+   }
+   stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:640},height:{ideal:480}},audio:false});
+   video.srcObject=stream;video.hidden=false;$('placeholder').hidden=true;
+   await new Promise(resolve=>video.onloadedmetadata=resolve);await video.play();
+   canvas.width=video.videoWidth;canvas.height=video.videoHeight;
+   running=true;$('stop').disabled=false;setStatus('Kamera aktif. Peragakan ekspresi target di depan kamera.');
+   updateResult('Ayo coba!','Tirukan ekspresi target.','Mendeteksi…');
+   detectLoop();
+ }catch(err){
+   console.error(err);setStatus('Tidak dapat memulai: '+(err.message||err)+' Pastikan memakai localhost/HTTPS dan izinkan akses kamera.');
+   updateResult('Kamera belum siap','Periksa izin kamera dan koneksi internet.','Perlu tindakan','bad');
+   $('start').disabled=false;
+ }
+}
+async function detectLoop(){
+ if(!running)return;
+ if(video.readyState>=2 && modelReady){
+  try{
+   const result=await faceapi.detectSingleFace(video,new faceapi.TinyFaceDetectorOptions({inputSize:320,scoreThreshold:.45})).withFaceExpressions();
+   ctx.clearRect(0,0,canvas.width,canvas.height);
+   if(result){
+    const box=result.detection.box;
+    ctx.strokeStyle='#ffd34e';ctx.lineWidth=4;ctx.strokeRect(box.x,box.y,box.width,box.height);
+    const expressions=result.expressions;
+    const entries=Object.entries(expressions).sort((a,b)=>b[1]-a[1]);
+    const [emotion,prob]=entries[0];
+    const mapped=EMOTIONS[emotion]?emotion:null;
+    const pct=Math.round(prob*100);
+    $('confidence').textContent=pct+'% '+(mapped?EMOTIONS[mapped].label:emotion.toUpperCase());
+    $('confidence').className='pill';
+    $('confidenceBar').style.width=pct+'%';
+    if(mapped){
+      $('resultText').textContent='Ekspresi terdeteksi: '+EMOTIONS[mapped].label+' ('+pct+'%).';
+      const now=Date.now();
+      // Validasi confidence dan batasi duplikasi skor
+      if(prob>=0.60 && mapped===target && (lastJudged!==target || now-lastJudgeAt>3500)){
+        score+=10;correct++;round++;lastJudged=target;lastJudgeAt=now;
+        $('score').textContent=score;$('correct').textContent=correct;
+        updateResult('Benar! +10 poin','AI mendeteksi '+EMOTIONS[target].label+'. Bagus!','Cocok','good');
+        play('soundCorrect');
+        setTimeout(()=>{if(running){chooseTarget();updateResult('Ekspresi berikutnya','Tirukan target baru.','Lanjutkan');}},1400);
+      }else if(mapped!==target && prob>=0.60){
+        updateResult('Coba lagi','Target '+EMOTIONS[target].label+', terdeteksi '+EMOTIONS[mapped].label+'.',pct+'%','bad');
+      }else{
+        updateResult('Terus mencoba','ekspresinya lebih lama coy.',pct+'%'); 
+      }
+    }else updateResult('Ekspresi belum tersedia','Coba ekspresi happy, sad, surprised, atau angry.','Tidak cocok','bad');
+   }else{
+    ctx.clearRect(0,0,canvas.width,canvas.height);$('confidenceBar').style.width='0%';
+    updateResult('Wajah belum terdeteksi','Posisikan wajah di tengah kamera dan cari pencahayaan yang cukup.','Cari wajah'); 
+   }
+  }catch(e){console.warn(e);}
+ }
+ if(running) requestAnimationFrame(detectLoop);
+}
+function stopCamera(){
+ running=false;
+ if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;}
+ video.srcObject=null;video.hidden=true;$('placeholder').hidden=false;ctx.clearRect(0,0,canvas.width,canvas.height);
+ $('start').disabled=false;$('stop').disabled=true;$('confidenceBar').style.width='0%';
+ updateResult('Kamera dimatikan','Tekan Mulai Kamera untuk bermain lagi.','Tidak aktif');
+ setStatus('Kamera dimatikan. Skor tetap tersimpan sampai tombol Ulangi Skor ditekan.');
+}
+$('start').addEventListener('click',startCamera);
+$('stop').addEventListener('click',stopCamera);
+$('newTarget').addEventListener('click',()=>{round++;chooseTarget();play('soundPop');updateResult('Target baru','Tirukan ekspresi '+EMOTIONS[target].label+'.','Menunggu');});
+$('reset').addEventListener('click',()=>{score=0;round=1;correct=0;lastJudged='';$('score').textContent='0';$('round').textContent='1';$('correct').textContent='0';chooseTarget();updateResult('Skor direset','Mulai lagi dan kumpulkan poin!','Siap');play('soundPop');});
+document.querySelectorAll('.emotion').forEach(el=>el.addEventListener('click',()=>{target=el.dataset.emotion;$('targetImg').src=EMOTIONS[target].file;$('targetLabel').textContent=EMOTIONS[target].label;document.querySelectorAll('.emotion').forEach(x=>x.classList.toggle('active',x===el));lastJudged='';updateResult('Target dipilih','Tirukan ekspresi '+EMOTIONS[target].label+'.','Menunggu');}));
+window.addEventListener('beforeunload',()=>{if(stream)stream.getTracks().forEach(t=>t.stop());});
+chooseTarget();
+</script>
+</body>
+</html>

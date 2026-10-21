@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Kelompok 3</title> <!-- ganti dengan nama kelompok kalian --> 
 <style>
-:root{--navy:#17234a;--blue:#2e63d5;--yellow:#ffd34e;--cream:#fff9e9;--ink:#202744;--green:#16845b;--red:#c84646}
+:root{--navy:#3B7597;--blue:#2e63d5;--yellow:#ffd34e;--cream:#fff9e9;--ink:#202744;--green:#16845b;--red:#c84646}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:var(--ink);background:linear-gradient(135deg,#fff9e9,#eef3ff);min-height:100vh}
 header{background:var(--navy);color:white;padding:18px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 5px 18px #17234a25}
 .brand{font-weight:900;font-size:1.3rem;letter-spacing:.3px}.brand span{color:var(--yellow)}.tag{font-size:.8rem;color:#dce5ff}
@@ -26,7 +26,7 @@ footer{text-align:center;font-size:.78rem;color:#737b91;padding:22px}
 </style>
 </head>
 <body>
-<header><div class="brand">Kelompok <span>3</span></div></header>
+<header><div class="brand">Emotion <span>Match</span></div></header>
 <main>
   <section class="intro"><h1>Match the Emotion!</h1><p>Tirukan ekspresi yang muncul, lalu lihat apakah AI mengenalinya.</p></section>
   <section class="game">
@@ -65,7 +65,7 @@ footer{text-align:center;font-size:.78rem;color:#737b91;padding:22px}
     </div>
   </section>
 </main>
-<footer>Emotion Match • HTML + CSS + JavaScript • Deteksi ekspresi berjalan di browser</footer> 
+<footer>Di buat oleh Kelompok 3</footer> 
 <audio id="soundCorrect" src="assets/poin.wav" preload="auto"></audio>
 <audio id="soundPop" src="assets/pop.wav" preload="auto"></audio>
 <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
@@ -111,7 +111,7 @@ async function startCamera(){
    await new Promise(resolve=>video.onloadedmetadata=resolve);await video.play();
    canvas.width=video.videoWidth;canvas.height=video.videoHeight;
    running=true;$('stop').disabled=false;setStatus('Kamera aktif. Peragakan ekspresi target di depan kamera.');
-   updateResult('Ayo coba!','Tirukan ekspresi target.','Mendeteksi…');
+   updateResult('Ayo Dicoba!','Tirukan ekspresi target.','Mendeteksi…');
    detectLoop();
  }catch(err){
    console.error(err);setStatus('Tidak dapat memulai: '+(err.message||err)+' Pastikan memakai localhost/HTTPS dan izinkan akses kamera.');
@@ -149,7 +149,7 @@ async function detectLoop(){
       }else if(mapped!==target && prob>=0.60){
         updateResult('Coba lagi','Target '+EMOTIONS[target].label+', terdeteksi '+EMOTIONS[mapped].label+'.',pct+'%','bad');
       }else{
-        updateResult('Terus mencoba','ekspresinya lebih lama coy.',pct+'%'); 
+        updateResult('Terus mencoba','Tunggu 2 detik lagi.',pct+'%'); 
       }
     }else updateResult('Ekspresi belum tersedia','Coba ekspresi happy, sad, surprised, atau angry.','Tidak cocok','bad');
    }else{
